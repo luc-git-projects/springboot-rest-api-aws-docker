@@ -4,22 +4,29 @@ import br.com.lucotavio.restspringboot.dto.PersonDto;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.service.PersonService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "person")
+@RequestMapping("/persons")
 public class PersonController {
 
     private final PersonService personService;
+    private final ModelMapper mapper;
+
+
+    public String helloWorld(){
+        return "Hello World";
+    }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PersonDto findById(@PathVariable Long id){
         Person person = personService.findById(id);
-        return new PersonDto(person.getId(), person.getFirstName(), person.getLastName(), person.getAddress(), person.getGender());
+        return mapper.map(person, PersonDto.class);
     }
 
     @GetMapping
@@ -28,23 +35,25 @@ public class PersonController {
         List<Person> personList = personService.findAll();
         List<PersonDto> personDtoList;
         personDtoList = personList.stream()
-                .map(p -> new PersonDto(p.getId(), p.getFirstName(), p.getLastName(), p.getAddress(), p.getGender()))
+                .map(p -> mapper.map(p, PersonDto.class))
                 .toList();
         return personDtoList;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonDto save(@RequestBody Person person){
+    public PersonDto save(@RequestBody PersonDto personDto){
+        Person person = mapper.map(personDto, Person.class);
         person = personService.save(person);
-        return new PersonDto(person.getId(), person.getFirstName(), person.getLastName(), person.getAddress(), person.getGender());
+        return mapper.map(person, PersonDto.class);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PersonDto update(@PathVariable Long id, @RequestBody Person person){
+    public PersonDto update(@PathVariable Long id, @RequestBody PersonDto personDto){
+        Person person = mapper.map(personDto, Person.class);
         person = personService.update(id, person);
-        return new PersonDto(person.getId(), person.getFirstName(), person.getLastName(), person.getAddress(), person.getGender());
+        return mapper.map(person, PersonDto.class);
     }
 
     @DeleteMapping(path = "/{id}")

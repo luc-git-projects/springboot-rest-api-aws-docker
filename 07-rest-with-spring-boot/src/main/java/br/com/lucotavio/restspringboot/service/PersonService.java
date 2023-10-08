@@ -1,13 +1,13 @@
 package br.com.lucotavio.restspringboot.service;
 
+import br.com.lucotavio.restspringboot.exception.PersonNotFoundException;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import static java.lang.StringTemplate.STR;
 
 @Slf4j
 @Service
@@ -18,57 +18,32 @@ public class PersonService {
 
     public Person findById(Long id){
         log.info("Finding one person");
-        Person person = new Person();
-        person.setId(id);
-        person.setFirstName("Luciano");
-        person.setLastName("Oliveira");
-        person.setAddress("Belo Horizonte - Minas Gerais");
-        person.setGender("Male");
+        String message = STR."Person with ID = \{id} not found";
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(message));
 
         return person;
     }
 
     public List<Person> findAll() {
-
-        log.info("Finding all persons");
-        List<Person> persons = new ArrayList<>();
-
-        for (int i = 0; i < 8; i++) {
-            Person person = mockPerson(i);
-            persons.add(person);
-        }
-
-        return  persons;
-    }
-
-    private Person mockPerson(int i) {
-        Person person = new Person();
-        person.setId((long) i);
-        person.setFirstName("Person name " + i);
-        person.setLastName("Last name " + i);
-        person.setAddress("some address in Brazil " + i);
-
-        if(i % 2 == 0){
-            person.setGender("Male");
-        }else{
-            person.setGender("Female");
-        }
-
-        return person;
+        return personRepository.findAll();
     }
 
     public Person save(Person person) {
         log.info("Save person");
-        return person;
+        return personRepository.save(person);
     }
 
     public Person update(Long id, Person person) {
         log.info("Update person");
+        findById(id);
         person.setId(id);
-        return person;
+        return personRepository.save(person);
     }
 
     public void delete(Long id){
         log.info("Deleting one person");
+        findById(id);
+        personRepository.deleteById(id);
     }
 }
