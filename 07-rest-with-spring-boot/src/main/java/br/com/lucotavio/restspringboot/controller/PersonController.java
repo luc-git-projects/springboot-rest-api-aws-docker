@@ -1,17 +1,20 @@
 package br.com.lucotavio.restspringboot.controller;
 
+import br.com.lucotavio.restspringboot.configuration.WebConfig;
 import br.com.lucotavio.restspringboot.dto.PersonDto;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.service.PersonService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/persons")
+@RequestMapping("/api/persons/v1")
 public class PersonController {
 
     private final PersonService personService;
@@ -22,14 +25,14 @@ public class PersonController {
         return "Hello World";
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public PersonDto findById(@PathVariable Long id){
         Person person = personService.findById(id);
         return mapper.map(person, PersonDto.class);
     }
 
-    @GetMapping
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public List<PersonDto> findAll(){
         List<Person> personList = personService.findAll();
@@ -40,15 +43,17 @@ public class PersonController {
         return personDtoList;
     }
 
-    @PostMapping
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonDto save(@RequestBody PersonDto personDto){
+    public PersonDto save(@Valid @RequestBody PersonDto personDto){
         Person person = mapper.map(personDto, Person.class);
         person = personService.save(person);
         return mapper.map(person, PersonDto.class);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, WebConfig.APPLICATION_YML_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public PersonDto update(@PathVariable Long id, @RequestBody PersonDto personDto){
         Person person = mapper.map(personDto, Person.class);
