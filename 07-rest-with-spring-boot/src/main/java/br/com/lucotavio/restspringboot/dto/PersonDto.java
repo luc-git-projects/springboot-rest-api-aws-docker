@@ -6,17 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.hateoas.RepresentationModel;
-
 import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonDto extends RepresentationModel<PersonDto> implements Serializable {
+public class PersonDto implements Serializable {
 
-    private Long key;
+    private Long id;
 
     @NotNull
     @NotEmpty
