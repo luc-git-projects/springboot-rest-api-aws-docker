@@ -5,28 +5,39 @@ import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/persons")
+@RequestMapping("/api/persons/v1")
 public class PersonController {
 
     private final PersonService personService;
     private final ModelMapper mapper;
 
+    private TypeMap<Person, PersonDto> propertyMapper;
 
-    public String helloWorld(){
-        return "Hello World";
+
+    public PersonController(PersonService personService, ModelMapper mapper) {
+        this.personService = personService;
+        this.mapper = mapper;
+        this.propertyMapper = this.mapper.createTypeMap(Person.class, PersonDto.class);
     }
+
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PersonDto findById(@PathVariable Long id){
         Person person = personService.findById(id);
-        return mapper.map(person, PersonDto.class);
+
+        //mapIdToKey();
+        PersonDto personDto = converterPersonToPersonDto(person, PersonDto.class);
+        personDto = createHateoas(id, personDto);
+        return personDto;
     }
 
     @GetMapping
@@ -35,7 +46,8 @@ public class PersonController {
         List<Person> personList = personService.findAll();
         List<PersonDto> personDtoList;
         personDtoList = personList.stream()
-                .map(p -> mapper.map(p, PersonDto.class))
+                .map(person -> converterPersonToPersonDto(person, PersonDto.class))
+                .map(personDto -> createHateoas(personDto))
                 .toList();
         return personDtoList;
     }
@@ -43,9 +55,12 @@ public class PersonController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PersonDto save(@RequestBody PersonDto personDto){
-        Person person = mapper.map(personDto, Person.class);
+        Person person = convertPersonDtoToPerson(personDto, Person.class);
         person = personService.save(person);
-        return mapper.map(person, PersonDto.class);
+
+        personDto = converterPersonToPersonDto(person, PersonDto.class);
+        personDto = createHateoas(person.getId(), personDto);
+        return personDto;
     }
 
     @PutMapping(path = "/{id}")
@@ -53,12 +68,36 @@ public class PersonController {
     public PersonDto update(@PathVariable Long id, @RequestBody PersonDto personDto){
         Person person = mapper.map(personDto, Person.class);
         person = personService.update(id, person);
-        return mapper.map(person, PersonDto.class);
+
+        personDto = converterPersonToPersonDto(person, PersonDto.class);
+        personDto = createHateoas(id, personDto);
+        return personDto;
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable Long id){
         personService.delete(id);
+    }
+
+    private PersonDto converterPersonToPersonDto(Person person, Class<PersonDto> clazz){
+        propertyMapper.addMapping(Person::getId, PersonDto::setKey);
+        return mapper.map(person, clazz);
+    }
+
+    private Person convertPersonDtoToPerson(PersonDto personDto, Class<Person> clazz){
+        return mapper.map(personDto, clazz);
+    }
+
+    private PersonDto createHateoas(Long id, PersonDto personDto){
+        if(id == null){
+            return personDto.add(linkTo(methodOn(PersonController.class).findAll()).withSelfRel());
+        }else{
+            return personDto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+        }
+    }
+
+    private PersonDto createHateoas(PersonDto personDto){
+        return createHateoas(null, personDto);
     }
 }
