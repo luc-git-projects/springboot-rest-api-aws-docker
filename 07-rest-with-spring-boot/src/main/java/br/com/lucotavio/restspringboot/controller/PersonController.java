@@ -3,18 +3,14 @@ package br.com.lucotavio.restspringboot.controller;
 import br.com.lucotavio.restspringboot.dto.PersonDto;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.service.PersonService;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 
 @RestController
 @RequestMapping("/api/persons/v1")
@@ -100,6 +96,4 @@ public class PersonController {
     private PersonDto createHateoas(PersonDto personDto){
         return createHateoas(null, personDto);
     }
-
-
 }

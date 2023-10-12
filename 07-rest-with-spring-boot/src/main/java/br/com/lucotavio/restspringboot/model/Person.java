@@ -11,7 +11,7 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
+@EqualsAndHashCode
 @Entity
 @Table(name = "PERSON")
 public class Person implements Serializable {
@@ -33,16 +33,4 @@ public class Person implements Serializable {
     @Column(name = "GENDER")
     private String gender;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address) && Objects.equals(gender, person.gender);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, address, gender);
-    }
 }

@@ -1,7 +1,6 @@
 package br.com.lucotavio.restspringboot.exception;
 
 import lombok.*;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
