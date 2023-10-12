@@ -26,6 +26,18 @@ public class PersonController {
         this.propertyMapper = mapper.createTypeMap(Person.class, PersonDto.class);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<PersonDto> findAll(){
+        List<Person> personList = personService.findAll();
+        List<PersonDto> personDtoList;
+        personDtoList = personList.stream()
+                .map(person -> converterPersonToPersonDto(person, PersonDto.class))
+                .map(personDto -> createHateoas(personDto))
+                .toList();
+        return personDtoList;
+    }
+
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PersonDto findById(@PathVariable Long id){
@@ -36,15 +48,16 @@ public class PersonController {
         return personDto;
     }
 
-    @GetMapping
+    @GetMapping(path = "/firstname/{firstName}")
     @ResponseStatus(HttpStatus.OK)
-    public List<PersonDto> findAll(){
-        List<Person> personList = personService.findAll();
+    public List<PersonDto> findByFirstName(@PathVariable String firstName){
+        List<Person> personList = personService.findByFirstName(firstName);
         List<PersonDto> personDtoList;
         personDtoList = personList.stream()
                 .map(person -> converterPersonToPersonDto(person, PersonDto.class))
                 .map(personDto -> createHateoas(personDto))
                 .toList();
+
         return personDtoList;
     }
 

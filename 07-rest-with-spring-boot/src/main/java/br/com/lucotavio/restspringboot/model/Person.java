@@ -33,4 +33,8 @@ public class Person implements Serializable {
     @Column(name = "GENDER")
     private String gender;
 
+    @Override
+    public Person clone(){
+        return new Person(id, firstName, lastName, address, gender);
+    }
 }

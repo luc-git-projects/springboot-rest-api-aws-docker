@@ -16,29 +16,36 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
+    public List<Person> findAll() {
+        List<Person> personList = personRepository.findAll();;
+        return personList;
+    }
+
     public Person findById(Long id){
         log.info("Finding one person");
         String message = STR."Person with ID = \{id} not found";
         Person person = personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(message));
-
         return person;
     }
 
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<Person> findByFirstName(String firstName){
+        List<Person> personList = personRepository.findByFirstNameContainsIgnoreCase(firstName);
+        return personList;
     }
 
     public Person save(Person person) {
         log.info("Save person");
-        return personRepository.save(person);
+        person = personRepository.save(person);
+        return person;
     }
 
     public Person update(Long id, Person person) {
         log.info("Update person");
         findById(id);
         person.setId(id);
-        return personRepository.save(person);
+        person = personRepository.save(person);
+        return person;
     }
 
     public void delete(Long id){

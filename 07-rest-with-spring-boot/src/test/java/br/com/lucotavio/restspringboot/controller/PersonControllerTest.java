@@ -102,6 +102,65 @@ class PersonControllerTest {
 
     }
 
+    @Test
+    void findByFirstName() throws Exception {
+
+        Person person1 = Person.builder()
+                .id(14L)
+                .firstName("Luciano")
+                .lastName("Oliveira")
+                .address("Belo Horizonte-MG")
+                .gender("male")
+                .build();
+
+        Person person2 = Person.builder()
+                .id(22L)
+                .firstName("Lucas")
+                .lastName("Machado")
+                .address("Caxias do Sul-RS")
+                .gender("male")
+                .build();
+
+
+        Person person3 = Person.builder()
+                .id(26L)
+                .firstName("Luana")
+                .lastName("Fernandez")
+                .address("Salvador-BA")
+                .gender("female")
+                .build();
+
+        given(personService.findByFirstName("lu")).willReturn(Arrays.asList(person1, person2, person3));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/persons/v1/firstname/{firstName}", "lu")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(3))
+
+                .andExpect(jsonPath("$[0].key").value(14))
+                .andExpect(jsonPath("$[0].firstName").value("Luciano"))
+                .andExpect(jsonPath("$[0].lastName").value("Oliveira"))
+                .andExpect(jsonPath("$[0].address").value("Belo Horizonte-MG"))
+                .andExpect(jsonPath("$[0].gender").value("male"))
+
+                .andExpect(jsonPath("$[1].key").value(22))
+                .andExpect(jsonPath("$[1].firstName").value("Lucas"))
+                .andExpect(jsonPath("$[1].lastName").value("Machado"))
+                .andExpect(jsonPath("$[1].address").value("Caxias do Sul-RS"))
+                .andExpect(jsonPath("$[1].gender").value("male"))
+
+                .andExpect(jsonPath("$[2].key").value(26))
+                .andExpect(jsonPath("$[2].firstName").value("Luana"))
+                .andExpect(jsonPath("$[2].lastName").value("Fernandez"))
+                .andExpect(jsonPath("$[2].address").value("Salvador-BA"))
+                .andExpect(jsonPath("$[2].gender").value("female"));
+
+
+    }
+
 
     @Test
     void save() throws Exception {
