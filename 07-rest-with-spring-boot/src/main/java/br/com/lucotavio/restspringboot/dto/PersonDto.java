@@ -1,17 +1,15 @@
 package br.com.lucotavio.restspringboot.dto;
 
+import br.com.lucotavio.restspringboot.model.Person;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
-
 import java.io.Serializable;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonDto extends RepresentationModel<PersonDto> implements Serializable {
@@ -24,7 +22,7 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
 
     @NotNull
     @NotEmpty
-    private String lastName;
+    private  String lastName;
 
     @NotNull
     @NotEmpty

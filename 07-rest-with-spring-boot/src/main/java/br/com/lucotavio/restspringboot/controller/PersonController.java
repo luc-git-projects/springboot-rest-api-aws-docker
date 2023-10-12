@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 @RestController
 @RequestMapping("/api/persons/v1")
@@ -18,23 +22,19 @@ public class PersonController {
 
     private final PersonService personService;
     private final ModelMapper mapper;
+    private final TypeMap<Person, PersonDto> propertyMapper;
 
-    private TypeMap<Person, PersonDto> propertyMapper;
-
-
-    public PersonController(PersonService personService, ModelMapper mapper) {
+    public PersonController(PersonService personService) {
         this.personService = personService;
-        this.mapper = mapper;
-        this.propertyMapper = this.mapper.createTypeMap(Person.class, PersonDto.class);
+        this.mapper = new ModelMapper();
+        this.propertyMapper = mapper.createTypeMap(Person.class, PersonDto.class);
     }
-
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PersonDto findById(@PathVariable Long id){
         Person person = personService.findById(id);
 
-        //mapIdToKey();
         PersonDto personDto = converterPersonToPersonDto(person, PersonDto.class);
         personDto = createHateoas(id, personDto);
         return personDto;
@@ -52,7 +52,7 @@ public class PersonController {
         return personDtoList;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public PersonDto save(@RequestBody PersonDto personDto){
         Person person = convertPersonDtoToPerson(personDto, Person.class);
@@ -100,4 +100,6 @@ public class PersonController {
     private PersonDto createHateoas(PersonDto personDto){
         return createHateoas(null, personDto);
     }
+
+
 }
