@@ -1,9 +1,6 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/rest_with_springboot?useTimezone=true&serverTimezone=UTC
-    username: root
-    password: 789789
 
   jpa:
     hibernate:
@@ -15,7 +12,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
 server:
-  port: 8787
+  port: 8888
 
 springdoc:
   paths-to-match: /api/**/v1/**
