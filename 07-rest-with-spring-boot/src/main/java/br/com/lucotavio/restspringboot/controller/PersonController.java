@@ -18,6 +18,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+//@CrossOrigin
 @RestController
 @RequestMapping("/api/persons/v1")
 @Tag(name = "People", description = "Endpoints for Managing People")
@@ -116,6 +117,8 @@ public class PersonController {
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
     })
+
+
     public PersonDto save(@RequestBody PersonDto personDto){
         Person person = convertPersonDtoToPerson(personDto, Person.class);
         person = personService.save(person);
