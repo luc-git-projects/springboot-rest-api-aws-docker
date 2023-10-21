@@ -1,13 +1,14 @@
 cors:
   originPatterns: http://localhost:3000,http://localhost:8787,https://erudio.com.br
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+    url: jdbc:mysql://localhost:3306/rest_with_springboot_test?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: 789789
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

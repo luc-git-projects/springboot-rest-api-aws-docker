@@ -1,5 +1,6 @@
 package br.com.lucotavio.restspringboot.dto;
 
+import br.com.lucotavio.restspringboot.model.Gender;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -29,5 +30,5 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
 
     @NotNull
     @NotEmpty
-    private String gender;
+    private Gender gender;
 }

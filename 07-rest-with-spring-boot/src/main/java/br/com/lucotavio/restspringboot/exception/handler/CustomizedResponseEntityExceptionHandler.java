@@ -1,7 +1,7 @@
 package br.com.lucotavio.restspringboot.exception.handler;
 
 import br.com.lucotavio.restspringboot.exception.ExceptionResponse;
-import br.com.lucotavio.restspringboot.exception.PersonNotFoundException;
+import br.com.lucotavio.restspringboot.exception.EntityNotFoundException;
 import br.com.lucotavio.restspringboot.exception.ValidationErrorResponse;
 import br.com.lucotavio.restspringboot.exception.Violation;
 import org.springframework.http.HttpHeaders;
@@ -17,15 +17,13 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(PersonNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handlePersonNotfoundException(PersonNotFoundException ex, WebRequest request){
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handlePersonNotfoundException(EntityNotFoundException ex, WebRequest request){
 
         ExceptionResponse exceptionResponse  = ExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())

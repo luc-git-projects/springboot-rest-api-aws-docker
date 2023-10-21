@@ -1,8 +1,8 @@
-CREATE TABLE person(
-    id         bigint(20) NOT NULL AUTO_INCREMENT,
-    first_name VARCHAR(80),
-    last_name  VARCHAR(80),
-    address    VARCHAR(255),
-    gender     VARCHAR(10),
+CREATE TABLE PERSON(
+    ID         bigint(20) NOT NULL AUTO_INCREMENT,
+    FIRST_NAME VARCHAR(80),
+    LAST_NAME  VARCHAR(80),
+    ADDRESS    VARCHAR(255),
+    GENDER     VARCHAR(10),
     PRIMARY KEY (id)
 );

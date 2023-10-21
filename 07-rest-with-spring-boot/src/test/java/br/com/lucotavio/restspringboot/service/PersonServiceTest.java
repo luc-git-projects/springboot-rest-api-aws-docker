@@ -1,5 +1,6 @@
 package br.com.lucotavio.restspringboot.service;
 
+import br.com.lucotavio.restspringboot.model.Gender;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
 
@@ -39,7 +40,7 @@ class PersonServiceTest {
                 .firstName("Fernanda")
                 .lastName("Zanon")
                 .address("São Paulo-SP")
-                .gender("female")
+                .gender(Gender.FEMALE)
                 .build();
 
         List<Person> personListSaved = Arrays.asList(personSaved1, personSaved2);
@@ -62,7 +63,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         Person personExpected = personSaved.clone();
@@ -84,7 +85,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
 
@@ -93,7 +94,7 @@ class PersonServiceTest {
                 .firstName("Luciamar")
                 .lastName("Bernis")
                 .address("São Paulo-SP")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         Person personSaved3 = Person.builder()
@@ -101,7 +102,7 @@ class PersonServiceTest {
                 .firstName("Lucas")
                 .lastName("Arnaldo")
                 .address("Contagem-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         List<Person> personListSaved = Arrays.asList(personSaved1, personSaved2, personSaved3);
@@ -123,7 +124,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         Person personAfterSaved = personBeforeSaved.clone();
@@ -144,7 +145,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         Person personAfterSaved = personBeforeSaved.clone();
@@ -169,7 +170,7 @@ class PersonServiceTest {
                 .firstName("Luciano")
                 .lastName("Oliveira")
                 .address("Belo Horizonte-MG")
-                .gender("male")
+                .gender(Gender.MALE)
                 .build();
 
         Optional<Person> optionalPerson = Optional.of(personAfterSaved);

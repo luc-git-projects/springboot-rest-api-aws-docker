@@ -30,8 +30,8 @@ public class Person implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
-    @Column(name = "GENDER")
-    private String gender;
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 
     @Override
     public Person clone(){

@@ -1,6 +1,6 @@
 package br.com.lucotavio.restspringboot.service;
 
-import br.com.lucotavio.restspringboot.exception.PersonNotFoundException;
+import br.com.lucotavio.restspringboot.exception.EntityNotFoundException;
 import br.com.lucotavio.restspringboot.model.Person;
 import br.com.lucotavio.restspringboot.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +17,16 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public List<Person> findAll() {
+        log.info("Find All People");
         List<Person> personList = personRepository.findAll();;
         return personList;
     }
 
     public Person findById(Long id){
-        log.info("Finding one person");
+        log.info("Finding person by id");
         String message = STR."Person with ID = \{id} not found";
         Person person = personRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(message));
+                .orElseThrow(() -> new EntityNotFoundException(message));
         return person;
     }
 
@@ -49,7 +50,7 @@ public class PersonService {
     }
 
     public void delete(Long id){
-        log.info("Deleting one person");
+        log.info("Deleting a person by id");
         findById(id);
         personRepository.deleteById(id);
     }
