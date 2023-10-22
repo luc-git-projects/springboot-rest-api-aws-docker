@@ -32,30 +32,6 @@ public class BookService {
         return book;
     }
 
-    public List<Book> findByAuthor(String author){
-        log.info("Finding book by author");
-        List<Book> bookList = bookRepository.findByAuthorContainsIgnoreCase(author);
-        return bookList;
-    }
-
-    public List<Book> findByTitle(String title){
-        log.info("Finding book by title");
-        List<Book> bookList = bookRepository.findByTitleContainsIgnoreCase(title);
-        return bookList;
-    }
-
-    public List<Book> findByLaunchDateBetween(LocalDate launchDateStart, LocalDate launchDateEnd){
-        log.info("Finding book between a launch date");
-        List<Book> bookList = bookRepository.findByLaunchDateBetween(launchDateStart, launchDateEnd);
-        return bookList;
-    }
-
-    public List<Book> findByPriceBetween(BigDecimal priceStart, BigDecimal priceEnd){
-        log.info("Finding book between a price");
-        List<Book> bookList = bookRepository.findByPriceBetween(priceStart, priceEnd);
-        return bookList;
-    }
-
     public Book save(Book book){
         log.info("Save a book");
         book = bookRepository.save(book);

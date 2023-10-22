@@ -1,4 +1,4 @@
-INSERT INTO PERSON (ADDRESS, FIRST_NAME, GENDER, LAST_NAME) VALUES
+INSERT INTO person (ADDRESS, FIRST_NAME, GENDER, LAST_NAME) VALUES
 ('São Paulo', 'Ayrton', 'MALE', 'Senna'),
 ('Anchiano - Italy', 'Leonardo', 'MALE', 'da Vinci'),
 ('Porbandar - India', 'Indira', 'FEMALE', 'Gandhi'),

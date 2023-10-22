@@ -1,8 +1,8 @@
-CREATE TABLE PERSON(
-    ID         bigint(20) NOT NULL AUTO_INCREMENT,
-    FIRST_NAME VARCHAR(80),
-    LAST_NAME  VARCHAR(80),
-    ADDRESS    VARCHAR(255),
-    GENDER     VARCHAR(10),
+CREATE TABLE person (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    address VARCHAR(255),
+    first_name VARCHAR(255),
+    gender ENUM ('FEMALE','MALE'),
+    last_name VARCHAR(255),
     PRIMARY KEY (id)
-);
+) engine=InnoDB

@@ -8,13 +8,4 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-
-    List<Book> findByAuthorContainsIgnoreCase(String author);
-
-    List<Book> findByTitleContainsIgnoreCase(String title);
-
-    List<Book> findByLaunchDateBetween(LocalDate launchDateStart, LocalDate launchDateEnd);
-
-    List<Book> findByPriceBetween(BigDecimal priceStart, BigDecimal priceEnd);
-
 }
