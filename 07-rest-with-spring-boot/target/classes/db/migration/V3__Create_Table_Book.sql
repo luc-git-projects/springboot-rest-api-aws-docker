@@ -1,8 +1,8 @@
 CREATE TABLE book (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    isbn VARCHAR(255),
+    title VARCHAR(100),
+    author VARCHAR(100),
     launch_date DATE,
     price DECIMAL(38,2),
-    title VARCHAR(255),
     PRIMARY KEY (id)
-) engine=InnoDB
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

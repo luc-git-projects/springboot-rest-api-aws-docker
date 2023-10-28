@@ -8,7 +8,6 @@ import org.springframework.http.converter.json.AbstractJackson2HttpMessageConver
 
 public class YamlJackson2TttpMessageConverter extends AbstractJackson2HttpMessageConverter {
 
-
     public YamlJackson2TttpMessageConverter() {
         super(new YAMLMapper()
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL),
