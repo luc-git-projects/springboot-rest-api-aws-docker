@@ -9,29 +9,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/books/v1")
 @Tag(name = "Book", description = "Endpoints for Managing Books")
 public class BookController {
 
     private final BookService bookService;
-    private final ModelMapper mapper;
-    private final TypeMap<Book, BookDto> propertyMapper;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-        this.mapper = new ModelMapper();
-        this.propertyMapper = mapper.createTypeMap(Book.class, BookDto.class);
-    }
-
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -53,8 +44,8 @@ public class BookController {
         List<BookDto> bookDtoList;
 
         bookDtoList = bookList.stream()
-                .map(book -> converterBookToBookDto(book, BookDto.class))
-                .map(bookDto -> createHateoas(bookDto))
+                .map(book -> new BookDto(book))
+                .map(bookDto -> bookDto.add(linkTo(methodOn(BookController.class).findAll()).withSelfRel()))
                 .toList();
 
         return bookDtoList;
@@ -74,9 +65,65 @@ public class BookController {
     })
     public BookDto findById(@PathVariable(name = "id") Long id){
         Book book = bookService.findById(id);
-        BookDto bookDto = converterBookToBookDto(book, BookDto.class);
-        bookDto = createHateoas(id, bookDto);
+        BookDto bookDto = new BookDto(book);
+        bookDto = bookDto.add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
         return bookDto;
+    }
+
+
+    @GetMapping(path = "/title/{title}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find a book using field title", description = "Find a book using field title", tags = {"Book"}, responses = {
+            @ApiResponse(description = "Success", responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class))
+                            )
+                    }),
+            @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+            @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+    })
+    public List<BookDto> findByTitle(@PathVariable(name = "title") String title){
+        List<Book> bookList = bookService.findByTitle(title);
+        List<BookDto> bookDtoList;
+
+        bookDtoList = bookList.stream()
+                .map(book -> new BookDto(book))
+                .map(bookDto -> bookDto.add(linkTo(methodOn(BookController.class).findByTitle(title)).withSelfRel()))
+                .toList();
+
+        return bookDtoList;
+    }
+
+
+    @GetMapping(path = "/author/{author}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find a book using field author", description = "Find a book using field author", tags = {"Book"}, responses = {
+            @ApiResponse(description = "Success", responseCode = "200",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class))
+                            )
+                    }),
+            @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+            @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+            @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+    })
+    public List<Book> findByAuthor(@PathVariable(name = "author") String author){
+        List<Book> bookList = bookService.findByAuthor(author);
+        List<BookDto> bookDtoList;
+
+        bookDtoList = bookList.stream()
+                .map(book -> new BookDto(book))
+                .map(bookDto -> bookDto.add(linkTo(methodOn(BookController.class).findByAuthor(author)).withSelfRel()))
+                .toList();
+
+        return bookList;
     }
 
 
@@ -91,10 +138,10 @@ public class BookController {
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
     })
     public BookDto save(@RequestBody BookDto bookDto){
-        Book book = convertBookDtoToBook(bookDto, Book.class);
+        Book book = new Book(bookDto);
         book = bookService.save(book);
-        bookDto = converterBookToBookDto(book, BookDto.class);
-        bookDto = createHateoas(bookDto);
+        bookDto = new BookDto(book);
+        bookDto = bookDto.add(linkTo(methodOn(BookController.class).save(bookDto)).withSelfRel());
         return bookDto;
     }
 
@@ -110,10 +157,10 @@ public class BookController {
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
     })
     public BookDto update(@PathVariable(name = "id") Long id, @RequestBody BookDto bookDto){
-        Book book = convertBookDtoToBook(bookDto, Book.class);
+        Book book = book = new Book(bookDto);
         book = bookService.update(id, book);
-        bookDto = converterBookToBookDto(book, BookDto.class);
-        bookDto = createHateoas(id, bookDto);
+        bookDto = new BookDto(book);
+        bookDto = bookDto.add(linkTo(methodOn(BookController.class).update(id, bookDto)).withSelfRel());
         return bookDto;
     }
 
@@ -130,15 +177,6 @@ public class BookController {
         bookService.deleteById(id);
     }
 
-    private BookDto converterBookToBookDto(Book book, Class<BookDto> clazz){
-        propertyMapper.addMapping(Book::getId, BookDto::setKey);
-        return mapper.map(book, clazz);
-    }
-
-    private Book convertBookDtoToBook(BookDto bookDto, Class<Book> clazz){
-        return mapper.map(bookDto, clazz);
-    }
-
     private BookDto createHateoas(Long id, BookDto bookDto){
         if(id == null){
             return bookDto.add(linkTo(methodOn(BookController.class).findAll()).withSelfRel());
@@ -150,4 +188,5 @@ public class BookController {
     private BookDto createHateoas(BookDto bookDto){
         return createHateoas(null, bookDto);
     }
+
 }

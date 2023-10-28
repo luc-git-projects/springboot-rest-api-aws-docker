@@ -53,7 +53,7 @@ public class PersonController {
         List<PersonDto> personDtoList;
         personDtoList = personList.stream()
                 .map(person -> converterPersonToPersonDto(person, PersonDto.class))
-                .map(personDto -> createHateoas(personDto))
+                .map(personDto -> personDto.add(linkTo(methodOn(PersonController.class).findAll()).withSelfRel()))
                 .toList();
         return personDtoList;
     }
@@ -74,7 +74,7 @@ public class PersonController {
         Person person = personService.findById(id);
 
         PersonDto personDto = converterPersonToPersonDto(person, PersonDto.class);
-        personDto = createHateoas(id, personDto);
+        personDto = personDto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
         return personDto;
     }
 
@@ -99,7 +99,7 @@ public class PersonController {
         List<PersonDto> personDtoList;
         personDtoList = personList.stream()
                 .map(person -> converterPersonToPersonDto(person, PersonDto.class))
-                .map(personDto -> createHateoas(personDto))
+                .map(personDto -> personDto.add(linkTo(methodOn(PersonController.class).findByFirstName(firstName)).withSelfRel()))
                 .toList();
 
         return personDtoList;
@@ -123,7 +123,7 @@ public class PersonController {
         person = personService.save(person);
 
         personDto = converterPersonToPersonDto(person, PersonDto.class);
-        personDto = createHateoas(person.getId(), personDto);
+        personDto = personDto.add(linkTo(methodOn(PersonController.class).save(personDto)).withSelfRel());
         return personDto;
     }
 
@@ -143,7 +143,7 @@ public class PersonController {
         person = personService.update(id, person);
 
         personDto = converterPersonToPersonDto(person, PersonDto.class);
-        personDto = createHateoas(id, personDto);
+        personDto = personDto.add(linkTo(methodOn(PersonController.class).update(id, personDto)).withSelfRel());
         return personDto;
     }
 
@@ -169,17 +169,5 @@ public class PersonController {
 
     private Person convertPersonDtoToPerson(PersonDto personDto, Class<Person> clazz){
         return mapper.map(personDto, clazz);
-    }
-
-    private PersonDto createHateoas(Long id, PersonDto personDto){
-        if(id == null){
-            return personDto.add(linkTo(methodOn(PersonController.class).findAll()).withSelfRel());
-        }else{
-            return personDto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
-        }
-    }
-
-    private PersonDto createHateoas(PersonDto personDto){
-        return createHateoas(null, personDto);
     }
 }
